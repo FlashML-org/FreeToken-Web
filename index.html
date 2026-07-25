@@ -461,6 +461,10 @@
       const REL = `https://github.com/${GH_ORG}/${GH_REPO}/releases`;
       // Download by fixed tag (works for prereleases too), not the "latest release" redirect
       const DL  = `${REL}/download/${BETA_TAG}`;
+      // The immutable per-version release CI mirrors alongside the rolling one. Its tag is the
+      // version with a `v` — the same `GITHUB_REF_NAME` that created it — so deriving it here
+      // keeps one thing to bump instead of two that could drift apart.
+      const VER_TAG = `v${VERSION}`;
 
       // Desktop full package (bundles the whl) — uploaded under fixed filenames so the URLs stay stable.
       // Linux ships three formats; the browser can't tell the distro (UA is a generic "X11; Linux"),
@@ -531,10 +535,13 @@
           </a>`).join("");
       }
 
-      // Current version (bump VERSION above per release); links to the beta release page
+      // Current version (bump VERSION above per release). Links to THIS version's own release,
+      // not the rolling `beta` one: that page always describes the newest build, so following a
+      // version number landed on notes for something else the moment the next release shipped.
+      // The download buttons keep using the rolling tag, where the filenames never change.
       const verEl = document.getElementById("version");
       verEl.textContent = "v" + VERSION;
-      verEl.href = `${REL}/tag/${BETA_TAG}`;
+      verEl.href = `${REL}/tag/${VER_TAG}`;
 
       // ── i18n(en / zh_CN)────────────────────────────────────────
       const I18N = {
