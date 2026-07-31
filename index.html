@@ -146,12 +146,72 @@
         text-align: center;
       }
 
+      /* The mark as a light SOURCE, in two stages.
+         The icon PNG is full-bleed — the rounded square runs to the edge of its canvas with no
+         margin, outline or shadow of its own — so at 92px it reads flat against the card. A black
+         shadow barely registers on #21252b; light is what separates it here, and the accent ties
+         the mark to the ambient glow body::before is already casting, the way the old icon's pale
+         blue outline used to. */
       .mark {
         width: 92px;
         height: 92px;
         margin: 0 auto 30px;
+        position: relative;
+        isolation: isolate;   /* keeps the bloom above the card but under the icon */
       }
-      .mark img { width: 100%; height: 100%; display: block; }
+
+      /* Stage 1 — the wide bloom. Colour-graded rather than a uniform ring: accent blue through
+         the middle, a little --success up at 64%/32%, which is where the artwork's green dot sits,
+         so the halo is keyed to the mark instead of ringing it. */
+      .mark::before {
+        content: "";
+        position: absolute;
+        inset: -57%;
+        z-index: -1;
+        pointer-events: none;
+        border-radius: 50%;
+        background:
+          radial-gradient(closest-side at 64% 32%,
+            color-mix(in srgb, var(--success) 12%, transparent),
+            color-mix(in srgb, var(--success) 4%, transparent) 46%,
+            transparent 76%),
+          radial-gradient(closest-side at 50% 48%,
+            color-mix(in srgb, var(--accent) 37%, transparent),
+            color-mix(in srgb, var(--accent) 13%, transparent) 42%,
+            transparent 74%);
+        filter: blur(8px);
+        /* Phase-locked to bg-breathe: SAME 6s, and the same 0/50/100 shape. `alternate` would be
+           the intuitive way to write a there-and-back and it is wrong — it makes one round trip
+           take 12s, so the mark would meet the page's rhythm only every other cycle and drift
+           visibly against it in between. Half the amplitude, so it follows rather than competes. */
+        animation: mark-bloom 6s ease-in-out infinite;
+        will-change: opacity, transform;
+      }
+      @keyframes mark-bloom {
+        0%, 100% { opacity: .43; transform: scale(1); }
+        50%      { opacity: .71; transform: scale(1.07); }
+      }
+
+      /* Stage 2 — the tight core, giving the silhouette its edge back. drop-shadow, not
+         box-shadow: box-shadow traces the element's RECTANGLE, poking four hard corners past the
+         rounded ones, while filter follows the PNG's alpha and needs no guess at the corner
+         radius. Three accent layers tightest-to-widest, then one black layer for actual weight. */
+      .mark img {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: block;
+        filter:
+          drop-shadow(0 0 1px    color-mix(in srgb, var(--accent) 43%, transparent))
+          drop-shadow(0 0 5px    color-mix(in srgb, var(--accent) 29%, transparent))
+          drop-shadow(0 1px 14px color-mix(in srgb, var(--accent) 15%, transparent))
+          drop-shadow(0 6px 20px rgba(0, 0, 0, .5));
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        /* Frozen mid-cycle rather than at rest, so the still version is the one that was designed. */
+        .mark::before { animation: none; opacity: .57; transform: scale(1.035); }
+      }
 
       h1 {
         margin: 0;
