@@ -1,23 +1,23 @@
 {
-  "version": "0.2.0-beta.11",
-  "notes": "## What's Changed\n\n### Features\n\n- Chat gets a major overhaul: a redesigned composer and transcript, message times, copy buttons, a real model-loading progress bar, and **Enter** to send (**Ctrl+Enter** for a newline).\n- The app now detects engine updates and offers to install them.\n\n### Fixes\n\n- The convert progress bar moves again.\n- Interrupted downloads now resume from where they left off.\n- Chat polish: \"jump to latest\" works while streaming, and the model picker dropdown is no longer clipped.\n- The quick guide no longer gets covered by other UI.",
-  "pub_date": "2026-08-07T02:28:56Z",
+  "version": "0.2.0-beta.12",
+  "notes": "## What's Changed\n\n### Features\n\n- **GLM-5.2 NVFP4** added to the model catalog.\n- The footer now shows the installed engine version.\n\n### Fixes\n\n- Linux: the \"first load takes longer\" notice no longer shows on every load.",
+  "pub_date": "2026-08-09T02:43:36Z",
   "platforms": {
     "linux-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUQU1YOWYvbExrS2dmZE8vek45dFhFWU5Rd1h4dlVzZFZ0ZjVIWmRjUVRyRU4xbGVSVHZadVNyclVlQVZnTzNwSTE2OEF6OCtFZENpZndMbEt5akoxNWhyWmFwSWQzUHdvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2MDY5NzE5CWZpbGU6ZnJlZXRva2VuLWRlc2t0b3AteDg2XzY0LkFwcEltYWdlClZydk5lSE5YYktNMEtQNkVxaDhSeTd6RVFwdlp4NEdXQ2tsKzFtTVdpY2pjeDUvZmJSZDc4d2RGaS9ieXNRT25xa1VtcTNSWlJNWWQvRWVMSCttQ0N3PT0K",
-      "url": "https://github.com/FlashML-org/FreeToken-Web/releases/download/v0.2.0-beta.11/freetoken-desktop-x86_64.AppImage"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUQU1YOWYvbExrS2dBQnlKVzNwbkZLK0dPSThrQklpZXdET0pHeUkxTHVnd1pDWHlOL1VQb05Gc0JtRUtETE9ZTFFxM2NUL1ZUWHdPc0c0eFVXOGVxZzhFVVV0U3BEVHdnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2MjQzNDAxCWZpbGU6ZnJlZXRva2VuLWRlc2t0b3AteDg2XzY0LkFwcEltYWdlCmpmd1hHcHVPbU5icURCNk1mVVIxNmxueE5oWS9GSHZweEpzWjVyeDR1akJzRnRWYVhQb01iNS9Bdjhrc1lYVHdWSkJSUG5tYWpKTmZnYUhFSUgvUkNnPT0K",
+      "url": "https://github.com/FlashML-org/FreeToken-Web/releases/download/v0.2.0-beta.12/freetoken-desktop-x86_64.AppImage"
     },
     "linux-x86_64-deb": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUQU1YOWYvbExrS3BkU1V5b1Z1Ty9HbVZWdlRybit3Mm42NW1ZazhQVExVaDBiYVJMeHJKVkRaOUJTOEh2YzVJR25ySUlhWm1xOHROMSttMCt1Y2NwM2RNNEtGWVRTeGdNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2MDY5NzIyCWZpbGU6ZnJlZXRva2VuLWRlc2t0b3AtYW1kNjQuZGViCldBUzNYcFk4Q2RWL3VUT2JvMWFxNFNJVjVscWVPUlIxR1hRYktxN1FXQnc3cnYzU0phSVpxVTF4U004c1FQbDFKNEh5WmFZR3BBcDdzSTBVMEgwV0N3PT0K",
-      "url": "https://github.com/FlashML-org/FreeToken-Web/releases/download/v0.2.0-beta.11/freetoken-desktop-amd64.deb"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUQU1YOWYvbExrS3JZMWNXWmhCZkxoMUN0aHR1YzdtSG8yckVRcG5pY29ad3BpYndRaTdlU1IxTGIxdnFDNTlObXJxSVZmblk5SzhkU2cvRk4zN25CSGFpTlVHYkN3L1FRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2MjQzNDA0CWZpbGU6ZnJlZXRva2VuLWRlc2t0b3AtYW1kNjQuZGViCm51U3RPMTlQWnhEN3RyVUZWMWkxTnhIS2pSMUFlSWVaUjJPUTBsWmMwNWFsSVpYN2tYQTNhblZtQTdpQmNOV0ZMMWREL3FmWXRITGRQQ0E1N2h5SkF3PT0K",
+      "url": "https://github.com/FlashML-org/FreeToken-Web/releases/download/v0.2.0-beta.12/freetoken-desktop-amd64.deb"
     },
     "linux-x86_64-pacman": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUQU1YOWYvbExrS24rZkx5T3AzZVRJZ2tPTE1oV3pzL0R1RlY4RkFmNmlBSEg0Und6Tk9FT0E1cjJ5ZXFhclBWZ1JxeWdKY1BVRHkzUWhhSHdhTlhZYjZubEtLanI0d2dZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2MDY5NzIzCWZpbGU6ZnJlZXRva2VuLWRlc2t0b3AteDg2XzY0LnBrZy50YXIuenN0CjlGa3I5MmFqZXhnWk9pVGl3NW54QVRDczg3T2FnRFBYWmRkNW92NWI1UGVQK2dmeE5uYXFIbE51OWhablFoeHhPTnlzYlpFYTNPVU44TTM0T01YQUJnPT0K",
-      "url": "https://github.com/FlashML-org/FreeToken-Web/releases/download/v0.2.0-beta.11/freetoken-desktop-x86_64.pkg.tar.zst"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUQU1YOWYvbExrS21icUlUN2Z1elQ2bVdwRUtsOS9LM2dIcGxNbllWM3FqaXV0M3BYWkM1OU8xR2hVYWlJVldFQW5Xb0FDdjYvckpRMU83cGJDYzcvVnhZSkhkb1FMU3dBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2MjQzNDA1CWZpbGU6ZnJlZXRva2VuLWRlc2t0b3AteDg2XzY0LnBrZy50YXIuenN0ClM3bnhOdEJPREdTTGFhQnNQYk5DSUFYeGRTem5wQTR2S1V4ZGVkRWloNXk2b2hRcnZhTlRKeXJPb25HWmJoTmZhdG1hdGdTSExuNmxCWndUL1FHV0F3PT0K",
+      "url": "https://github.com/FlashML-org/FreeToken-Web/releases/download/v0.2.0-beta.12/freetoken-desktop-x86_64.pkg.tar.zst"
     },
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUQU1YOWYvbExrS2xpZmZOQzcwZGdwckk0K0JUcE5PMXVrKzk1MFJjN3lrTEE2dGt0R01tdHd4em5DRjB2V2pMQmNvNWtHcnJKalZ2TU9meDQ2eHdNcm51VUQ2TUM0bGdBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2MDY5NzIxCWZpbGU6RnJlZVRva2VuLVNldHVwLXdpbi14NjQuZXhlCjFsZHJWSTVhM3h0dnM2SXJpSlZxTDBpUGp5MDlxM3I3WUNXWDVrS3RLU0F0L0M4dUZJck5VL2lNOWFSK2lXY1FQZEFndEtONG9sSitaUEhLODVuMEFnPT0K",
-      "url": "https://github.com/FlashML-org/FreeToken-Web/releases/download/v0.2.0-beta.11/FreeToken-Setup-win-x64.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUQU1YOWYvbExrS3QwQXlseGs3cjVqVjVwU0lmcU5JRnZGSUFoUEoyZExubHVjVGlac2FXQnRBRVAwMnpXZGo3cStCZkdDRHprWW9veFQ5bE1Xa2RlSWhHajlGYmxxQXdnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2MjQzNDAzCWZpbGU6RnJlZVRva2VuLVNldHVwLXdpbi14NjQuZXhlCkJjZm9YWkxsUTFPbmVVVmpPZmdRQlhIRitNVUtsc1pEYXFBYjJydU1zamNLYkJDWGx4ZEJWM1g0VjNuUHJ2bVRzT2Jxc3QzV3FsRUEvT1FUQS9xMEJnPT0K",
+      "url": "https://github.com/FlashML-org/FreeToken-Web/releases/download/v0.2.0-beta.12/FreeToken-Setup-win-x64.exe"
     }
   }
 }
