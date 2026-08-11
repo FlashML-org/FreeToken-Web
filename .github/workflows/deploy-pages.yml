@@ -7,6 +7,9 @@ on:
       - "index.html"
       - "assets/**"
       - "update/**"      # desktop updater manifests (stable.json / beta.json)
+      - "CNAME"
+      - "robots.txt"
+      - "sitemap.xml"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 

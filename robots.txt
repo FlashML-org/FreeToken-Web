@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+# updater manifests — machine endpoints, nothing to index
+Disallow: /update/
+
+Sitemap: https://www.flashml.ai/sitemap.xml
