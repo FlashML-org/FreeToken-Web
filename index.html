@@ -41,33 +41,49 @@
       }
     }
     </script>
-    <link rel="icon" type="image/png" href="assets/icon-128.png" />
+    <!-- Tab icon: the blue F on the dark squircle. SVG first for browsers that take it; the PNG
+         stays as the fallback every browser reads and is what Windows/Safari pin to a taskbar.
+         Both PNGs are rasterised from this same SVG, so the three never drift apart. -->
+    <link rel="icon" type="image/svg+xml" href="assets/f-icon.svg" />
+    <link rel="icon" type="image/png" sizes="128x128" href="assets/icon-128.png" />
+    <link rel="apple-touch-icon" href="assets/icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Rubik, because the wordmark IS Rubik 700 — the lockup's own glyphs are outlined Rubik, so
+         setting the page in it makes the copy read as the same voice as the logo instead of merely
+         sitting near it. Latin only: Rubik has no CJK, so Noto Sans SC still carries 中文 by
+         per-glyph fallback. 700 is loaded for the CTA; the wordmark needs no webfont at all. -->
     <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" />
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" />
     <style>
       :root {
         color-scheme: dark;
         /* reserve the scrollbar gutter on both sides so it appearing/disappearing
            (e.g. when "all platforms" expands) never shifts the centered layout */
         scrollbar-gutter: stable both-edges;
-        --bg: #21252b;
-        --surface: #282c34;
-        --surface-2: #2f343e;
-        --surface-3: #3a3f4b;
+        /* Palette is the brand's, not One Dark's. The old ramp was Atom's editor chrome (#21252b /
+           #282c34 / #61afef); every value below derives from the four brand colours, recorded here
+           because the brand assets that documented them no longer live in this repo:
+           #14171C ink · #58A6F0 blue · #3CB98F green · #F5F7FA paper.
+           --bg IS the ink, which is also the fill behind the F in the tab icon and the tile — so
+           the icon's ground and the page's ground are literally the same colour, and the surfaces
+           above it are that ink lifted toward the blue rather than a separate grey. */
+        --bg: #14171c;
+        --surface: #1b1f27;
+        --surface-2: #232830;
+        --surface-3: #2e343e;
         --border: rgba(255, 255, 255, 0.07);
-        --border-2: #3a3f4b;
-        --text: #d7dae0;
-        --text-2: #abb2bf;
-        --text-3: #7f848e;
-        --text-4: #5c6370;
-        --accent: #61afef;
-        --success: #98c379;
-        --warn: #e5c07b;
-        --danger: #e06c75;
+        --border-2: #2c323c;
+        --text: #dde2e9;
+        --text-2: #a8b0bd;
+        --text-3: #7c8492;
+        --text-4: #5b6371;
+        --accent: #58a6f0;   /* exactly the blue of the wordmark's "Token" and of the F in the icon */
+        --success: #3cb98f;  /* the FreeToken green from the icon set, replacing One Dark's #98c379 */
+        --warn: #e5c07b;     /* warn/danger stay Atom's: they are the traffic-light dots, i.e. */
+        --danger: #e06c75;   /* window chrome being imitated, not brand colours */
         --mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", "Noto Sans SC", monospace;
-        --sans: "Inter", "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei",
+        --sans: "Rubik", "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei",
                 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
       }
 
@@ -95,10 +111,13 @@
         inset: 0;
         z-index: -1;
         pointer-events: none;
+        /* Brand blue 88,166,240 and brand green 60,185,143 — was One Dark's 97,175,239 and its
+           #56b6c2 teal. Alphas nudged up a touch because --bg dropped to the darker brand ink and
+           the same values read weaker against it. */
         background:
-          radial-gradient(circle at 50% 44%, rgba(97, 175, 239, 0.10), transparent 55%),
-          radial-gradient(circle at 26% 20%, rgba(97, 175, 239, 0.12), transparent 34rem),
-          radial-gradient(circle at 74% 18%, rgba(86, 182, 194, 0.07), transparent 30rem);
+          radial-gradient(circle at 50% 44%, rgba(88, 166, 240, 0.12), transparent 55%),
+          radial-gradient(circle at 26% 20%, rgba(88, 166, 240, 0.14), transparent 34rem),
+          radial-gradient(circle at 74% 18%, rgba(60, 185, 143, 0.08), transparent 30rem);
         animation: bg-breathe 6s ease-in-out infinite;
       }
       /* token.ai-style breathe — slow scale + brightness pulse (their colors swapped for ours) */
@@ -112,12 +131,16 @@
 
       a { color: inherit; text-decoration: none; }
 
+      /* Lifted to --surface. It used to be --bg, i.e. the same colour as the page, which worked
+         when that was #21252b and the drop shadow could darken the ground beneath it. Against the
+         brand ink there is nothing left to darken — a black shadow on near-black reads as nothing —
+         so the panel now separates by being one step LIGHTER than the page instead. */
       .window {
         width: min(760px, 100%);
         overflow: hidden;
         border: 1px solid var(--border-2);
         border-radius: 10px;
-        background: var(--bg);
+        background: var(--surface);
         box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
       }
 
@@ -179,40 +202,45 @@
         text-align: center;
       }
 
-      /* The mark as a light SOURCE, in two stages.
-         The icon PNG is full-bleed — the rounded square runs to the edge of its canvas with no
-         margin, outline or shadow of its own — so at 92px it reads flat against the card. A black
-         shadow barely registers on #21252b; light is what separates it here, and the accent ties
-         the mark to the ambient glow body::before is already casting, the way the old icon's pale
-         blue outline used to. */
-      .mark {
-        width: 92px;
-        height: 92px;
-        margin: 0 auto 30px;
+      /* THE HERO IS NOW THE LOCKUP, not a tile plus a typeset word.
+         h1 keeps its semantics and its text (in the img's alt) — the wordmark ships as outlined
+         paths, so nothing here depends on Rubik being available. The lockup already contains the F
+         mark, which is why the separate 92px icon above it is gone: showing both put the same mark
+         on screen twice. Sizing is by HEIGHT, since the art is a fixed 1048x216 (4.85:1) and only
+         the height is visually comparable to the old 64px type. */
+      .wordmark {
+        margin: 0 auto;
+        /* Tracks the old h1's clamp() so the hero grows and shrinks as it always did. The old rule
+           was font-size: clamp(38px, 6.4vw, 64px) on Inter 600; the ceiling here is 1.5x that,
+           which is what makes the wordmark's cap height land where the type's used to.
+           The FLOOR is deliberately not 1.5x: a 4.85:1 lockup runs out of room long before a word
+           of type does, and 56px there measured 272px inside the 284px a 320px phone leaves —
+           12px of air. 48px gives 233px, which is about what "FreeToken" set at 38px Inter used to
+           occupy, so the narrow end matches the old hero instead of straining against the card.
+           min(100%, …) is the backstop: below ~300px the art just tracks the container. */
+        width: min(100%, calc(clamp(48px, 9.6vw, 96px) * 1048 / 216));
         position: relative;
-        isolation: isolate;   /* keeps the bloom above the card but under the icon */
+        isolation: isolate;   /* keeps the bloom above the card but under the art */
+        line-height: 0;       /* h1 is a block of text to the layout engine; the img is not text */
       }
 
-      /* Stage 1 — the wide bloom. Colour-graded rather than a uniform ring: accent blue through
-         the middle, a little --success up at 64%/32%, which is where the artwork's green dot sits,
-         so the halo is keyed to the mark instead of ringing it. */
-      .mark::before {
+      /* The bloom — the page's one light source, inherited from the old icon treatment and reshaped
+         from a disc to a wide ellipse so it sits under a 4.85:1 lockup instead of a square tile.
+         Accent blue only: the lockup's mark and its "Token" half are both #58a6f0, so a second
+         hue would be lighting something that is not there. */
+      .wordmark::before {
         content: "";
         position: absolute;
-        inset: -57%;
+        inset: -68% -14%;
         z-index: -1;
         pointer-events: none;
         border-radius: 50%;
         background:
-          radial-gradient(closest-side at 64% 32%,
-            color-mix(in srgb, var(--success) 12%, transparent),
-            color-mix(in srgb, var(--success) 4%, transparent) 46%,
-            transparent 76%),
-          radial-gradient(closest-side at 50% 48%,
-            color-mix(in srgb, var(--accent) 37%, transparent),
-            color-mix(in srgb, var(--accent) 13%, transparent) 42%,
-            transparent 74%);
-        filter: blur(8px);
+          radial-gradient(closest-side at 50% 50%,
+            color-mix(in srgb, var(--accent) 26%, transparent),
+            color-mix(in srgb, var(--accent) 9%, transparent) 46%,
+            transparent 76%);
+        filter: blur(10px);
         /* Phase-locked to bg-breathe: SAME 6s, and the same 0/50/100 shape. `alternate` would be
            the intuitive way to write a there-and-back and it is wrong — it makes one round trip
            take 12s, so the mark would meet the page's rhythm only every other cycle and drift
@@ -225,34 +253,35 @@
         50%      { opacity: .71; transform: scale(1.07); }
       }
 
-      /* Stage 2 — the tight core, giving the silhouette its edge back. drop-shadow, not
-         box-shadow: box-shadow traces the element's RECTANGLE, poking four hard corners past the
-         rounded ones, while filter follows the PNG's alpha and needs no guess at the corner
-         radius. Three accent layers tightest-to-widest, then one black layer for actual weight. */
-      .mark img {
+      /* The tight core. drop-shadow, not box-shadow: box-shadow traces the element's RECTANGLE,
+         which for a wordmark means a glowing box around the letters, while filter follows the
+         glyphs' own alpha. Kept far weaker than the icon's version was — at this scale the same
+         values smeared the counters in "ee" and the gap inside the F shut. */
+      .wordmark img {
         position: relative;
         width: 100%;
-        height: 100%;
+        height: auto;
         display: block;
         filter:
-          drop-shadow(0 0 1px    color-mix(in srgb, var(--accent) 43%, transparent))
-          drop-shadow(0 0 5px    color-mix(in srgb, var(--accent) 29%, transparent))
-          drop-shadow(0 1px 14px color-mix(in srgb, var(--accent) 15%, transparent))
-          drop-shadow(0 6px 20px rgba(0, 0, 0, .5));
+          drop-shadow(0 0 8px  color-mix(in srgb, var(--accent) 18%, transparent))
+          drop-shadow(0 2px 3px rgba(0, 0, 0, .45));
       }
 
       @media (prefers-reduced-motion: reduce) {
         /* Frozen mid-cycle rather than at rest, so the still version is the one that was designed. */
-        .mark::before { animation: none; opacity: .57; transform: scale(1.035); }
+        .wordmark::before { animation: none; opacity: .57; transform: scale(1.035); }
       }
 
+      /* Kept even though the h1 now holds an image rather than text: this is what styles the alt
+         text if the SVG ever fails to load, so the fallback is the hero the page used to have
+         instead of a browser-default serif heading. .wordmark overrides what it needs to. */
       h1 {
         margin: 0;
         color: #f0f2f5;
         font-size: clamp(38px, 6.4vw, 64px);
         font-weight: 600;
         line-height: 0.98;
-        letter-spacing: -0.025em;   /* Inter reads best with tight negative tracking at display size */
+        letter-spacing: -0.015em;   /* Rubik needs less negative tracking than Inter did at display size */
       }
 
       .lead {
@@ -297,23 +326,48 @@
         transition: filter .15s ease, border-color .15s ease;
       }
       .button:hover { filter: brightness(1.12); }
+
+      /* The primary CTA is now SOLID brand blue with ink text, where it used to be a 13% accent
+         wash on --surface-2 with #8ecbff text. That ghost treatment made the one action the page
+         exists for look like a secondary control — and on the darker ink ground it receded further.
+         Ink on #58a6f0 measures 6.95:1, so the inversion buys contrast rather than spending it.
+         The blue shadow is the same light-source idea as the wordmark's bloom: the button is lit,
+         not merely coloured. */
       .button.primary {
         min-height: 56px;
         padding: 0 36px;
         border-radius: 11px;
         font-size: 16px;
-        border-color: color-mix(in srgb, var(--accent) 42%, var(--border-2));
-        background: color-mix(in srgb, var(--accent) 13%, var(--surface-2));
-        color: #8ecbff;
+        font-weight: 700;   /* Rubik 600 reads lighter than Inter 600 did; 700 holds the weight */
+        border-color: transparent;
+        background: var(--accent);
+        color: #14171c;
+        box-shadow:
+          0 2px 10px  color-mix(in srgb, var(--accent) 26%, transparent),
+          0 8px 28px  color-mix(in srgb, var(--accent) 16%, transparent);
+      }
+      .button.primary:hover {
+        /* brightness() on a saturated fill goes chalky, so lift toward paper instead and let the
+           shadow bloom — reads as the surface catching more light. */
+        filter: none;
+        background: color-mix(in srgb, var(--accent) 88%, #f5f7fa);
+        box-shadow:
+          0 2px 12px color-mix(in srgb, var(--accent) 34%, transparent),
+          0 10px 34px color-mix(in srgb, var(--accent) 22%, transparent);
       }
       .button .os { color: var(--text-3); font-weight: 500; }
-      .button.primary .os { color: color-mix(in srgb, #8ecbff 70%, transparent); }
+      /* The OS name is a qualifier, not part of the call to action, so it steps back from the verb
+         beside it — but only as far as AA allows. Measured on the #58a6f0 fill: 58% ink is 3.10:1
+         and fails at this size (16px/500 needs 4.5:1); 76% is the first passing value at 4.57:1.
+         78% is used for a little margin (4.80:1) and is still visibly lighter than the 100%-ink verb. */
+      .button.primary .os { color: color-mix(in srgb, #14171c 78%, transparent); font-weight: 500; }
       .button.is-disabled {
         cursor: default;
         pointer-events: none;
         color: var(--text-3);
         border-color: var(--border-2);
-        background: var(--surface);
+        background: var(--surface-2);   /* was --surface, which is now the window itself */
+        box-shadow: none;               /* never inherit the primary CTA's blue glow */
       }
 
       /* ── split download button: main = default format, chevron = "other versions" ── */
@@ -327,7 +381,9 @@
       }
       .dl-more {
         min-height: 56px;
-        border-left: 1px solid color-mix(in srgb, var(--accent) 34%, var(--border-2));
+        /* Divider is now ink-on-blue: the old accent/border-2 mix was tuned to show up against a
+           dark translucent fill and is invisible sitting on the solid accent. */
+        border-left: 1px solid color-mix(in srgb, #14171c 22%, transparent);
         cursor: pointer;
       }
       /* square the inner edge + slim it down — both must beat .button.primary
@@ -341,9 +397,12 @@
       .dl-more[hidden] { display: none; }
       .dl-more .chev { display: inline-block; transition: transform .2s ease; }
       .dl-more[aria-expanded="true"] .chev { transform: rotate(180deg); }
-      /* no harsh default outline on mouse click; keep an accessible ring for keyboard focus */
+      /* no harsh default outline on mouse click; keep an accessible ring for keyboard focus.
+         The ring is paper, not accent: an accent ring offset 2px from an accent-filled button is
+         two blues with a 2px gap of --bg between them, which reads as a rendering artefact rather
+         than focus. Paper reads unambiguously against both the button and the ground. */
       .dl-split .button:focus { outline: none; }
-      .dl-split .button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .dl-split .button:focus-visible { outline: 2px solid #f5f7fa; outline-offset: 2px; }
       /* Full width of the split button (its left edge → the chevron's right edge), dropping
          straight down like the button extended. Grows from the top when opened. */
       .dl-menu {
@@ -358,7 +417,7 @@
         padding: 6px;
         border: 1px solid var(--border-2);
         border-radius: 11px;
-        background: var(--surface);
+        background: var(--surface-2);   /* one step above the window, which is now --surface */
         box-shadow: 0 16px 44px rgba(0, 0, 0, 0.44);
         text-align: left;
         transform-origin: top center;
@@ -381,7 +440,7 @@
         border-radius: 7px;
         transition: background .15s ease;
       }
-      .dl-menu-item:hover { background: var(--surface-2); }
+      .dl-menu-item:hover { background: var(--surface-3); }
       .dl-menu-item .os-name { font-size: 13.5px; font-weight: 600; color: var(--text); }
       .dl-menu-item .file { font-family: var(--mono); font-size: 11px; color: var(--text-3); word-break: break-all; }
 
@@ -453,12 +512,13 @@
         text-align: left;
         border: 1px solid var(--border-2);
         border-radius: 8px;
-        background: var(--surface);
+        /* Both bumped one step: the cards sit ON the window, and the window is --surface now. */
+        background: var(--surface-2);
         transition: border-color .15s ease, background .15s ease;
       }
       .card:hover {
         border-color: color-mix(in srgb, var(--accent) 40%, var(--border-2));
-        background: var(--surface-2);
+        background: var(--surface-3);
       }
       .card .os-name { font-size: 14px; font-weight: 600; color: var(--text); }
       .card .file { font-family: var(--mono); font-size: 11px; color: var(--text-3); word-break: break-all; }
@@ -508,10 +568,10 @@
 
       <section class="content">
         <div style="width: 100%; max-width: 620px;">
-          <div class="mark">
-            <img src="assets/icon.png" alt="FreeToken" width="92" height="92" />
-          </div>
-          <h1>FreeToken</h1>
+          <h1 class="wordmark">
+            <img src="assets/freetoken-logo-dark.svg" alt="FreeToken"
+                 width="1048" height="216" />
+          </h1>
           <p class="lead" id="lead">Bring Frontier to Edge</p>
 
           <div class="actions">
@@ -564,7 +624,7 @@
       // so we default Linux to .deb and let the user pick Arch / AppImage from "All platforms".
       const PLATFORMS = [
         { key: "win",      label: "Windows",         file: "FreeToken-Setup-win-x64.exe" },
-        { key: "deb",      label: "Debian / Ubuntu", file: "freetoken-desktop-amd64.deb" },
+        { key: "deb",      label: "Ubuntu",          file: "freetoken-desktop-amd64.deb" },
         { key: "arch",     label: "Arch Linux",      file: "freetoken-desktop-x86_64.pkg.tar.zst" },
         { key: "appimage", label: "AppImage",        file: "freetoken-desktop-x86_64.AppImage" },
       ];
