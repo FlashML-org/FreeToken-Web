@@ -1,3 +1,4 @@
 # FreeToken
 
-Local LLMs, under your control — the download page and release hosting for the FreeToken runtime and desktop app.
+- Download — [flashml.ai](https://www.flashml.ai/)
+- Source — [FlashML-org/FreeToken](https://github.com/FlashML-org/FreeToken)
