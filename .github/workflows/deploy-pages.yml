@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:                 # redeploy only when web files change
       - "index.html"
+      - "install-macos.sh"
       - "assets/**"
       - "update/**"      # desktop updater manifests (stable.json / beta.json)
       - "changelog/**"
