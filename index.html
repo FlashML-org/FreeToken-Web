@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>FreeToken — Bring Frontier to Edge | FlashML</title>
-    <meta name="description" content="FreeToken by FlashML — 本地大模型运行时与桌面客户端, 前沿智能, 触手可及。Bring Frontier to Edge: download and run local LLMs on your own Windows or Linux machine. Private, offline, free download." />
-    <meta name="keywords" content="FreeToken, FlashML, local LLM, LLM runtime, run LLM locally, 本地大模型, 本地部署, 大语言模型, desktop app, Windows, Linux" />
+    <meta name="description" content="FreeToken by FlashML — 本地大模型运行时与桌面客户端, 前沿智能, 触手可及。Bring Frontier to Edge: download and run local LLMs on your own Windows, Linux, or macOS Apple Silicon machine. Private, offline, free download." />
+    <meta name="keywords" content="FreeToken, FlashML, local LLM, LLM runtime, run LLM locally, 本地大模型, 本地部署, 大语言模型, desktop app, Windows, Linux, macOS, Apple Silicon" />
     <link rel="canonical" href="https://www.flashml.ai/" />
     <meta property="og:title" content="FreeToken — Bring Frontier to Edge" />
     <meta property="og:description" content="Download and run large language models on your own machine — private, offline, free." />
@@ -19,7 +19,7 @@
     <meta property="og:locale:alternate" content="en_US" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="FreeToken — Bring Frontier to Edge" />
-    <meta name="twitter:description" content="Download and run large language models on your own machine. Free for Windows &amp; Linux." />
+    <meta name="twitter:description" content="Download and run large language models on your own machine. Free for Windows, Linux, and macOS Apple Silicon." />
     <meta name="twitter:image" content="https://www.flashml.ai/assets/icon.png" />
     <script type="application/ld+json">
     {
@@ -30,7 +30,7 @@
       "image": "https://www.flashml.ai/assets/icon.png",
       "description": "FreeToken is a local-LLM runtime and desktop control panel: download large language models and run them on your own machine — private and offline. Bring Frontier to Edge.",
       "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Windows, Linux",
+      "operatingSystem": "Windows, Linux, macOS",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
       "downloadUrl": "https://www.flashml.ai/",
       "codeRepository": "https://github.com/FlashML-org/FreeToken",
@@ -543,6 +543,14 @@
       }
       .card .os-name { font-size: 14px; font-weight: 600; color: var(--text); }
       .card .file { font-family: var(--mono); font-size: 11px; color: var(--text-3); word-break: break-all; }
+      button.card {
+        appearance: none;
+        margin: 0;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+        width: 100%;
+      }
 
       .footer {
         height: 44px;
@@ -675,7 +683,10 @@
       // Desktop full package (bundles the whl) — uploaded under fixed filenames so the URLs stay stable.
       // Linux ships three formats; the browser can't tell the distro (UA is a generic "X11; Linux"),
       // so we default Linux to .deb and let the user pick Arch / AppImage from "All platforms".
+      // macOS has no .dmg yet: Apple Silicon installs the Metal CLI via install-macos.sh.
+      const MAC_INSTALL = `curl -fsSL https://www.flashml.ai/install-macos.sh | bash`;
       const PLATFORMS = [
+        { key: "mac",      label: "macOS",           kind: "cli", command: MAC_INSTALL, file: "install-macos.sh" },
         { key: "win",      label: "Windows",         file: "FreeToken-Setup-win-x64.exe" },
         { key: "deb",      label: "Ubuntu",          file: "freetoken-desktop-amd64.deb" },
         { key: "arch",     label: "Arch Linux",      file: "freetoken-desktop-x86_64.pkg.tar.zst" },
@@ -683,34 +694,40 @@
       ];
       const LINUX_KEYS = ["deb", "arch", "appimage"];
 
-      // Detect the current OS -> return its default download; anything but Win/Linux -> null.
+      // Detect the current OS -> return its default download; iOS/Android -> null.
       // Linux is marked "linux" and defaults to .deb (Arch / AppImage live in the dropdown).
-      // Append ?os=win|linux|arch|appimage|none to force a state (handy for local preview).
+      // Append ?os=mac|win|linux|arch|appimage|none to force a state (handy for local preview).
       function detectPlatform() {
         const forced = new URLSearchParams(location.search).get("os");
         if (forced === "none") return null;
         if (forced === "linux") return PLATFORMS.find(p => p.key === "deb"); // Linux default = .deb
         if (forced) return PLATFORMS.find(p => p.key === forced) || null;
         const ua = navigator.userAgent || "";
-        if (/Android/i.test(ua)) return null;                       // mobile
+        if (/Android|iPhone|iPad|iPod/i.test(ua)) return null;      // mobile
         if (/Windows|Win32|Win64/i.test(ua)) return PLATFORMS.find(p => p.key === "win");
+        if (/Macintosh|Mac OS X/i.test(ua)) return PLATFORMS.find(p => p.key === "mac");
         if (/Linux|X11/i.test(ua))  return PLATFORMS.find(p => p.key === "deb"); // Android already excluded above
-        return null;                                                // macOS / iOS / others
+        return null;
       }
       const current = detectPlatform();
 
       // Downloads grouped by OS so the Linux formats sit together (platform names are proper
       // nouns, left untranslated). Windows is a single card; Linux shows its three formats.
       const GROUPS = [
+        { name: "macOS",   keys: ["mac"] },
         { name: "Windows", keys: ["win"] },
         { name: "Linux",   keys: LINUX_KEYS },
       ];
       const byKey = k => PLATFORMS.find(p => p.key === k);
-      const cardHtml = p => `
-        <a class="card" href="${DL}/${p.file}">
-          <span class="os-name">${p.label}</span>
-          <span class="file">${p.file}</span>
-        </a>`;
+      const cardHtml = p => p.kind === "cli"
+        ? `<button type="button" class="card" data-copy="${p.command.replace(/"/g, "&quot;")}">
+            <span class="os-name">${p.label}</span>
+            <span class="file">${p.file}</span>
+          </button>`
+        : `<a class="card" href="${DL}/${p.file}">
+            <span class="os-name">${p.label}</span>
+            <span class="file">${p.file}</span>
+          </a>`;
       document.getElementById("cards-inner").innerHTML = GROUPS.map(g => {
         const items = g.keys.map(byKey).filter(Boolean);
         // Fixed 3-column grid across every group so all cards are the same size
@@ -757,6 +774,8 @@
           title:     "FreeToken — 前沿智能, 触手可及 | FlashML",
           lead:      "前沿智能, 触手可及",
           download:  "下载 FreeToken",
+          install:   "安装 FreeToken",
+          copied:    "已复制安装命令",
           unsupported: "暂不支持当前系统",
           moreVersions: "其他版本",
           platforms: "所有平台",
@@ -770,6 +789,8 @@
           title:     "FreeToken — Bring Frontier to Edge | FlashML",
           lead:      "Bring Frontier to Edge",
           download:  "Download FreeToken",
+          install:   "Install FreeToken",
+          copied:    "Copied install command",
           unsupported: "Not supported on your OS yet",
           moreVersions: "Other versions",
           platforms: "All platforms",
@@ -798,13 +819,20 @@
         document.getElementById("platforms-label").textContent = t.platforms;
         document.getElementById("changelog-link").textContent = `${t.changelog} →`;
         const primary = document.getElementById("primary");
-        if (current) {
+        if (current && current.kind === "cli") {
           primary.classList.remove("is-disabled");
+          primary.setAttribute("href", "#");
+          primary.setAttribute("role", "button");
+          primary.innerHTML = `${t.install} <span class="os">${current.label}</span>`;
+        } else if (current) {
+          primary.classList.remove("is-disabled");
+          primary.removeAttribute("role");
           primary.setAttribute("href", `${DL}/${current.file}`);
           primary.innerHTML = `${t.download} <span class="os">${current.label}</span>`;
         } else {
           primary.classList.add("is-disabled");
           primary.removeAttribute("href");
+          primary.removeAttribute("role");
           primary.textContent = t.unsupported;
         }
         if (moreBtn) moreBtn.setAttribute("aria-label", t.moreVersions);
@@ -854,6 +882,44 @@
       setPlatformsOpen(!current);
       platformsToggle.addEventListener("click", () => {
         setPlatformsOpen(platformsToggle.getAttribute("aria-expanded") !== "true");
+      });
+
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise((resolve, reject) => {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "fixed";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          const ok = document.execCommand("copy");
+          ta.remove();
+          ok ? resolve() : reject(new Error("copy failed"));
+        });
+      }
+      function flashCopied(el) {
+        const t = I18N[lang];
+        const prev = el.innerHTML;
+        el.textContent = t.copied;
+        setTimeout(() => { el.innerHTML = prev; }, 1600);
+      }
+      if (current && current.kind === "cli") {
+        document.getElementById("primary").addEventListener("click", e => {
+          e.preventDefault();
+          copyText(current.command).then(() => flashCopied(e.currentTarget));
+        });
+      }
+      document.getElementById("cards-inner").addEventListener("click", e => {
+        const btn = e.target.closest("[data-copy]");
+        if (!btn) return;
+        copyText(btn.getAttribute("data-copy")).then(() => {
+          const file = btn.querySelector(".file");
+          if (file) flashCopied(file);
+        });
       });
 
       applyLang();
