@@ -647,6 +647,10 @@
       const GH_REPO   = "FreeToken-Web";
       const BETA_TAG  = "beta";           // rolling release tag: assets are clobbered per build, URL never changes
       const VERSION   = "0.2.0-beta.26";  // shown on the page — bump this each release
+      // The Mac's version, which the desktop release CI writes on a release that ships macOS.
+      // Empty = no Mac release on the rolling tag yet: the page then lists no Mac download, so
+      // a visitor can never be sent to a .dmg that isn't there.
+      const MAC_VERSION = "";
       // ───────────────────────────────────────────────────────────
 
       // The engine itself is open source and lives in its own repo, separate from this
@@ -667,45 +671,54 @@
       const REL = `https://github.com/${GH_ORG}/${GH_REPO}/releases`;
       // Download by fixed tag (works for prereleases too), not the "latest release" redirect
       const DL  = `${REL}/download/${BETA_TAG}`;
-      // The immutable per-version release CI mirrors alongside the rolling one. Its tag is the
-      // version with a `v` — the same `GITHUB_REF_NAME` that created it — so deriving it here
-      // keeps one thing to bump instead of two that could drift apart.
-      const VER_TAG = `v${VERSION}`;
 
       // Desktop full package (bundles the whl) — uploaded under fixed filenames so the URLs stay stable.
       // Linux ships three formats; the browser can't tell the distro (UA is a generic "X11; Linux"),
       // so we default Linux to .deb and let the user pick Arch / AppImage from "All platforms".
+      // The Mac build needs Apple Silicon and macOS 15 (the app's minimumSystemVersion; ftm's
+      // Metal kernels need 15 too), and no browser tells either: Safari reports "Intel" on every
+      // Mac and every UA freezes the version at 10_15_7. So the label says it, not the page.
       const PLATFORMS = [
         { key: "win",      label: "Windows",         file: "FreeToken-Setup-win-x64.exe" },
         { key: "deb",      label: "Ubuntu",          file: "freetoken-desktop-amd64.deb" },
         { key: "arch",     label: "Arch Linux",      file: "freetoken-desktop-x86_64.pkg.tar.zst" },
         { key: "appimage", label: "AppImage",        file: "freetoken-desktop-x86_64.AppImage" },
+        ...(MAC_VERSION
+          ? [{ key: "mac", label: "macOS 15+ (Apple Silicon)", file: "FreeToken-Desktop-macos-arm64.dmg" }]
+          : []),
       ];
       const LINUX_KEYS = ["deb", "arch", "appimage"];
+      const byKey = k => PLATFORMS.find(p => p.key === k) || null;
 
-      // Detect the current OS -> return its default download; anything but Win/Linux -> null.
+      // Detect the current OS -> return its default download; anything else -> null.
       // Linux is marked "linux" and defaults to .deb (Arch / AppImage live in the dropdown).
-      // Append ?os=win|linux|arch|appimage|none to force a state (handy for local preview).
+      // A Mac gets null too until MAC_VERSION is set (byKey finds no "mac" entry).
+      // Append ?os=win|linux|arch|appimage|mac|none to force a state (handy for local preview).
       function detectPlatform() {
         const forced = new URLSearchParams(location.search).get("os");
         if (forced === "none") return null;
-        if (forced === "linux") return PLATFORMS.find(p => p.key === "deb"); // Linux default = .deb
-        if (forced) return PLATFORMS.find(p => p.key === forced) || null;
+        if (forced === "linux") return byKey("deb"); // Linux default = .deb
+        if (forced) return byKey(forced);
         const ua = navigator.userAgent || "";
         if (/Android/i.test(ua)) return null;                       // mobile
-        if (/Windows|Win32|Win64/i.test(ua)) return PLATFORMS.find(p => p.key === "win");
-        if (/Linux|X11/i.test(ua))  return PLATFORMS.find(p => p.key === "deb"); // Android already excluded above
-        return null;                                                // macOS / iOS / others
+        // iPhone/iPad say "like Mac OS X", and iPadOS Safari poses as a Mac outright: only its
+        // touch screen gives it away.
+        if (/iPhone|iPad|iPod/i.test(ua)) return null;
+        if (/Macintosh|Mac OS X/i.test(ua)) return navigator.maxTouchPoints > 1 ? null : byKey("mac");
+        if (/Windows|Win32|Win64/i.test(ua)) return byKey("win");
+        if (/Linux|X11/i.test(ua))  return byKey("deb"); // Android already excluded above
+        return null;                                                // iOS / others
       }
       const current = detectPlatform();
 
       // Downloads grouped by OS so the Linux formats sit together (platform names are proper
-      // nouns, left untranslated). Windows is a single card; Linux shows its three formats.
+      // nouns, left untranslated). Windows and macOS are a single card; Linux shows its three
+      // formats. A group with no entry (macOS before its first release) is left out.
       const GROUPS = [
         { name: "Windows", keys: ["win"] },
+        { name: "macOS",   keys: ["mac"] },
         { name: "Linux",   keys: LINUX_KEYS },
-      ];
-      const byKey = k => PLATFORMS.find(p => p.key === k);
+      ].filter(g => g.keys.some(byKey));
       const cardHtml = p => `
         <a class="card" href="${DL}/${p.file}">
           <span class="os-name">${p.label}</span>
@@ -746,9 +759,13 @@
       // build, so following a version number landed on notes for something else the moment the
       // next release shipped. The download buttons keep using the rolling tag, where the
       // filenames never change.
+      // A Mac shows the Mac's version: a release may ship Windows/Linux without the Mac (or the
+      // reverse), so the two can differ. The changelog anchors each version by its release tag,
+      // the version with a `v` (the `GITHUB_REF_NAME` that created it).
+      const SHOWN_VERSION = current && current.key === "mac" ? MAC_VERSION : VERSION;
       const verEl = document.getElementById("version");
-      verEl.textContent = "v" + VERSION;
-      verEl.href = `changelog/#${VER_TAG}`;
+      verEl.textContent = "v" + SHOWN_VERSION;
+      verEl.href = `changelog/#v${SHOWN_VERSION}`;
 
       // ── i18n(en / zh_CN)────────────────────────────────────────
       const I18N = {
