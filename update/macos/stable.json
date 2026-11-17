@@ -1,0 +1,11 @@
+{
+  "version": "0.2.0-beta.27",
+  "notes": "## What's Changed\n\n### Features\n\n- **Added macOS support** on Apple silicon Macs with macOS 15 or later, running models with the [FreeToken-metal](https://github.com/FlashML-org/FreeToken-metal) engine and updating itself in the app\n- macOS: Added installing and updating the FreeToken-metal engine in the app, from the latest release or the untested nightly build\n- macOS: Added a model catalog of MLX builds of Qwen3.6, Qwen3.5, Gemma 4, Flint and Ornith\n- macOS: Added running a MoE model larger than memory by streaming its experts from the SSD\n- macOS: Added packing a MoE model's experts for SSD streaming from its model details\n- macOS: Added a per-model KV capacity setting\n- macOS: Added following the system proxy in system proxy mode\n- macOS: Added a monochrome menu bar icon\n- Added a live monitor to the Console with speed, request and GPU history\n- Added editing the API prices behind the cost-saved figure, including for models the price table lacks\n- Added a summary of what an in-app update brought, shown on the next launch\n- Added flint-40b-a2.5b to the model catalog\n- Added a circular reveal when switching between dark and light themes\n\n### Fixes\n\n- Fixed text and icons rendering at different sizes and weights from machine to machine\n- Fixed the window flickering while switching between dark and light themes\n- Fixed the xhigh, adaptive, minimal and none thinking levels showing untranslated",
+  "pub_date": "2026-11-17T02:46:17Z",
+  "platforms": {
+    "darwin-aarch64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUQU1YOWYvbExrS25IU09ITXJlT081enFXTW9NOVhYR3g0ZUdmdXNLc3ZHVUgzZUJCKzhCYUxPcEdqOUZsVFp5d3E4RGlqMUVSMXFBYzFlR2czam5abDc2OEdETjZOZXdVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0ODgzNTUzCWZpbGU6ZnJlZXRva2VuLWRlc2t0b3AtYWFyY2g2NC5hcHAudGFyLmd6CktSQ25RZURFQXNPeDk3YXgwa3JMTDdKWFY1b1pQdmJnSVVTdTF4dUVuNytQZ21ET0ZYSCtKdlNETHpiNnVzeGJHdHBYWHh1bTdzSkdObjd2OTNqVENBPT0K",
+      "url": "https://github.com/FlashML-org/FreeToken-Web/releases/download/v0.2.0-beta.27/freetoken-desktop-aarch64.app.tar.gz"
+    }
+  }
+}
