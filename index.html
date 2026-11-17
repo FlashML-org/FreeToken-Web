@@ -558,7 +558,7 @@
       .footer a { color: var(--text-3); }
       .footer a:hover { color: var(--text-2); }
       .footer .sep { margin: 0 8px; opacity: .45; }
-      /* GitHub mark on the engine link only: it says "this is a repo", which the ↗ (which only
+      /* GitHub mark on the engine repo links only: it says "this is a repo", which the ↗ (which only
          says "leaves the page") cannot. Inline SVG rather than an asset — it is 300 bytes and a
          separate request for a 12px glyph is not worth a round trip. currentColor so it picks up
          the link's hover along with the text. */
@@ -653,9 +653,13 @@
       const MAC_VERSION = "";
       // ───────────────────────────────────────────────────────────
 
-      // The engine itself is open source and lives in its own repo, separate from this
-      // download/release host.
-      const GH_ENGINE = `https://github.com/${GH_ORG}/FreeToken`;
+      // The engines are open source and live in their own repos, separate from this
+      // download/release host: FreeToken (Windows/Linux) and FreeToken-metal (`ftm`, the Mac's).
+      // Repo names are proper nouns, so the links carry them untranslated.
+      const GH_REPOS = [
+        { name: "FreeToken",       url: `https://github.com/${GH_ORG}/FreeToken` },
+        { name: "FreeToken-metal", url: `https://github.com/${GH_ORG}/FreeToken-metal` },
+      ];
 
       // GitHub's own mark, 16x16 viewBox, single path.
       const GH_MARK =
@@ -778,7 +782,6 @@
           moreVersions: "其他版本",
           platforms: "所有平台",
           tagline:   "FreeToken · 前沿智能, 触手可及",
-          source:    "引擎源码",
           changelog: "更新日志",
           releases:  "全部版本",
         },
@@ -791,7 +794,6 @@
           moreVersions: "Other versions",
           platforms: "All platforms",
           tagline:   "FreeToken · Bring Frontier to Edge",
-          source:    "Engine source",
           changelog: "Changelog",
           releases:  "Releases",
         },
@@ -826,10 +828,10 @@
         }
         if (moreBtn) moreBtn.setAttribute("aria-label", t.moreVersions);
         document.getElementById("tagline").textContent = t.tagline;
+        const sep = `<span class="sep" aria-hidden="true">·</span>`;
         document.getElementById("ver").innerHTML =
-          `<a href="${GH_ENGINE}">${GH_MARK}${t.source} ↗</a>` +
-          `<span class="sep" aria-hidden="true">·</span>` +
-          `<a href="${REL}">${t.releases} ↗</a>`;
+          GH_REPOS.map(r => `<a href="${r.url}">${GH_MARK}${r.name} ↗</a>`).join(sep) +
+          sep + `<a href="${REL}">${t.releases} ↗</a>`;
         document.querySelectorAll(".lang-btn").forEach(b =>
           b.classList.toggle("active", b.dataset.lang === lang));
       }
